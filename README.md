@@ -14,6 +14,10 @@
 #   id3v2.3の規定ではUSC-2となっているので本来サロゲートペア分は含まれないが実装としては対応している可能性が高い。
 #   対応していなくても未表示となるだけと思われる。サロゲートペア分はマイナーな文字ということだからあまり問題も出ないであろう。
 #
-# 言語はOracleのJAVA-1.8.0_45を使用。
+# 言語はOracleのJava SE Development Kit 8u73を使用。
+http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+# Linux x64 tar.gz　版をダウンロードして適当なディレクトリに解凍しJAVAHOMEに設定、binにPATHを通しておく
+#
 # id3タグ用ライブラリjaudiotaggerを利用。
 http://www.jthink.net/jaudiotagger/
+# 配置したディレクトリをCLASSPATHに追加しておく
