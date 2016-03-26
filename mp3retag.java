@@ -1,6 +1,11 @@
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Iterator;
-import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.exceptions.*;
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.id3.AbstractID3v1Tag;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
@@ -8,29 +13,50 @@ import org.jaudiotagger.tag.FieldKey;
 
 
 public class mp3retag{
-  public static void main(String[] args){
+	
+	// 詳細表示モードフラグ
+	static boolean detailMode = false;
+	// 書き換えモードフラグ
+	static boolean convertMode = false;
 
-	// 引数が0の場合はエラー
-    if( args.length < 1 ){
-      System.out.println( "error: no args" );
-      System.exit(1);
-    }
+	
+	public static void main(String[] orgArgs){
 
+		// 引数処理を開始
+		List<String> args = new ArrayList<String>();
 
-  	// 引数処理を開始
-  	try{
-  		procArgs( args );
-  	}
-  	catch( Exception e ){
-  		e.printStackTrace();
-  		System.exit(1);
-  	}
-  	// 終了
-  }
-// 引数処理関数
-	static void procArgs( String[] args ){
-		for( int i = 0; i < args.length; i++ ){
-			File fp = new File(args[i]);
+		// 先頭が「-」を抽出して動作モードフラグを設定する
+		for( int i = 0; i < orgArgs.length; i++ ){
+			if( "-d".equals(orgArgs[i]) ){
+				detailMode = true;
+			} else if( "--convert".equals(orgArgs[i])  ){
+				convertMode = true;
+			} else {
+				args.add( orgArgs[i] );
+			}
+		}
+		// 残った引数が0の場合はエラー
+    	if( args.size() < 1 ){
+    		System.out.println( "error: no args" );
+    		System.exit(1);
+    	}
+
+		try{
+			procArgs( args );
+		}
+		catch( Exception e ){
+			e.printStackTrace();
+			System.exit(1);
+		}
+		// 終了
+		args = null;
+		System.exit(0);
+	}
+
+	// 引数処理関数
+	static void procArgs( List<String> args ){
+		for( int i = 0; i < args.size(); i++ ){
+			File fp = new File(args.get(i));
 			if( fp.isFile() ){
 				try{
 					procFile(fp);
@@ -41,14 +67,14 @@ public class mp3retag{
 				}
 			} else if( fp.isDirectory() ){
 				try{
-					procDirectory(args[i]);
+					procDirectory(args.get(i));
 				}
 				catch( Exception e ){
 					e.printStackTrace();
 					System.exit(1);
 				}
 			} else {
-				System.out.println( "do not found file or directory: " + args[i] );
+				System.out.println( "do not found file or directory: " + args.get(i) );
 			}
 			// fpインスタンス削除
 			fp = null;
@@ -77,7 +103,7 @@ public class mp3retag{
 				fp = null;
 				try{
 					procDirectory(fList[i].toString());
-					System.out.println(fList[i]);
+//					System.out.println(fList[i]);
 				}
 				catch( Exception e ){
 					e.printStackTrace();
@@ -89,24 +115,52 @@ public class mp3retag{
 		}
 	}
 	
-// ファイル処理用メソッド
+// ファイル情報表示用メソッド
 	static void procFile( File fp ){
 		//ファイル名
-		System.out.println( fp );
-		AudioFile af = new AudioFile();
+		MP3File af = new MP3File();
+		String id3version = "";
 		try{
-			af = AudioFileIO.read(fp);
+			af = (MP3File)AudioFileIO.read(fp);
+		}
+		catch( InvalidAudioFrameException e ){
+//			System.out.println( "-> pass:  no Tag now" );
+			return;
+		}
+		catch( java.lang.ClassCastException e ){
+//			System.out.println( "->pass:  no mp3 Audio File" );
+			return;
+		}
+		catch( CannotReadException e ){
+//			System.out.println( "->pass:  no mp3 Audio File" );
+			return;
 		}
 		catch( Exception e ){
 			e.printStackTrace();
 		}
 		Tag tag = af.getTag();
-		System.out.println( tag.getFieldCount() );
-		System.out.println( tag.getFieldCountIncludingSubValues() );
-		System.out.println( tag.getFirst(FieldKey.TITLE) );
+		System.out.print( fp );
+		if( af.hasID3v2Tag() ){
+			AbstractID3v2Tag v2tag = af.getID3v2Tag();
+			id3version = v2tag.getIdentifier();
+			System.out.println( id3version );
+			if( detailMode ){
+				System.out.println( v2tag.toString() );
+			}
+			v2tag = null;
+		} else if( af.hasID3v1Tag() ){
+			AbstractID3v1Tag v1tag = af.getID3v1Tag();
+			id3version = v1tag.getIdentifier();
+			System.out.println( id3version );
+			System.out.println( v1tag.toString() );
+			if( detailMode ){
+				System.out.println( v1tag.toString() );
+			}
+			v1tag = null;
+		} else {
+			System.out.println( ": no tag" );
+		}
+		af = null;
 	}
-
-
-
 }
 
