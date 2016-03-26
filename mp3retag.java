@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.jaudiotagger.audio.exceptions.*;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.id3.AbstractID3v1Tag;
@@ -10,7 +9,6 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.FieldKey;
-
 
 public class mp3retag{
 	
@@ -139,27 +137,38 @@ public class mp3retag{
 			e.printStackTrace();
 		}
 		Tag tag = af.getTag();
-		System.out.print( fp );
+		System.out.println( "File:\"" + fp + "\"" );
 		if( af.hasID3v2Tag() ){
 			AbstractID3v2Tag v2tag = af.getID3v2Tag();
 			id3version = v2tag.getIdentifier();
-			System.out.println( id3version );
+			System.out.println( "Tag Version:\"" + id3version + "\"" );
 			if( detailMode ){
 				System.out.println( v2tag.toString() );
+			} else {
+				System.out.println( "" );
 			}
 			v2tag = null;
 		} else if( af.hasID3v1Tag() ){
 			AbstractID3v1Tag v1tag = af.getID3v1Tag();
 			id3version = v1tag.getIdentifier();
-			System.out.println( id3version );
-			System.out.println( v1tag.toString() );
+			System.out.println( "Tag Version:\"" + id3version + "\"" );
 			if( detailMode ){
-				System.out.println( v1tag.toString() );
+				System.out.println( "Tag content:" );
+				System.out.println( "	TRACK:\"" +  tag.getFirst("TRACK")+"\"" );
+				System.out.println( "	TITLE:\"" +  tag.getFirst("TITLE")+"\"" );
+				System.out.println( "	ALBUM:\"" +  tag.getFirst("ALBUM")+"\"" );
+				System.out.println( "	ARTIST:\"" + tag.getFirst("ARTIST")+"\"" );
+				System.out.println( "	GENRE:\""  +  tag.getFirst("GENRE")+"\"" );
+				System.out.println( "	YEAR:\""  +  tag.getFirst("YEAR")+"\"" );
+				System.out.println( "" );
+			} else {
+				System.out.println( "" );
 			}
 			v1tag = null;
 		} else {
 			System.out.println( ": no tag" );
 		}
+		tag = null;
 		af = null;
 	}
 }
