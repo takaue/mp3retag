@@ -113,7 +113,7 @@ public class mp3retag{
 		}
 	}
 	
-// ファイル情報表示用メソッド
+// ファイル処理メソッド
 	static void procFile( File fp ){
 		//ファイル名
 		MP3File af = new MP3File();

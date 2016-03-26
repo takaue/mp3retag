@@ -15,8 +15,8 @@ java mp3retag testMp3/
 # detail option
 java mp3retag -d testMp3/
 
-# write option
-java mp3retag --write testMp3/
+# convert option
+java mp3retag --convert testMp3/
 
 # detail option re
 java mp3retag -d testMp3/
