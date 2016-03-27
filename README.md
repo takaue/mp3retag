@@ -10,12 +10,25 @@ mp3retag
 　　--convert 　　　タグをID3v2.3に書き換えます。v2.3の場合はそのまま。
 
 
+
+
 ＊＊＊
+言語はOracleのJava SE Development Kit 8u73を使用。
+http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+　Linux x64 tar.gz　版をダウンロードして適当なディレクトリに解凍しJAVAHOMEに設定、binにPATHを通しておく
+
+id3タグ用ライブラリjaudiotaggerを利用。
+http://www.jthink.net/jaudiotagger/
+配置したディレクトリをCLASSPATHに追加しておく
+
+情報があまりないので下記のAPIを見てどうにかした。
+http://www.jthink.net/jaudiotagger/maven/apidocs/index.html
+
+
 id3v2.3なのは2016年3月現在日本ではデファクトスタンダードっぽいため
-ソニーやパナソニック製品で使われている
+　ソニーのWalkmanやパナソニック製品で使われている
 
-
-id3はver 1系列と2系列で互換性はなく、2系列でも2.1,2.2,2.3,2.4でいろいろ違っている
+id3はver 1系列と2系列で互換性はなく、2系列でも2.2,2.3,2.4でいろいろ違っているようでややこしい
 ver 1には文字コードの規定がない
 ver 2.2以下は欧州文字のみ対応
 ver 2.3は規定はUCS-2だが実質バイトオーダーマーク付きUTF-16
@@ -24,13 +37,10 @@ ver 2.4はUTF-8
   UTF-16はもともとUSC-2に対応していたが、未使用部分の組み合わせ4バイト32ビットで補う形でUSC-4にも対応。
   この補った部分はサロゲートペアと呼ばれる。
   id3v2.3の規定ではUSC-2となっているので本来サロゲートペア分は含まれないが実装としては対応している可能性が高い。
-  対応していなくても未表示となるだけと思われる。サロゲートペア分はマイナーな文字ということだからあまり問題も出ないであろう。
+  対応していなくても未表示となるだけと思われる。サロゲートペア分はマイナーな文字ということだからあまり問題も出ないと思われる。
 
-言語はOracleのJava SE Development Kit 8u73を使用。
-http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-　Linux x64 tar.gz　版をダウンロードして適当なディレクトリに解凍しJAVAHOMEに設定、binにPATHを通しておく
 
-id3タグ用ライブラリjaudiotaggerを利用。
-http://www.jthink.net/jaudiotagger/
-配置したディレクトリをCLASSPATHに追加しておく
+残課題
+v1からv2.3に変換する場合、一旦タグを削除するので画像が消えると思われる。
+文字コード云々は未対応。
 
