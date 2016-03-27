@@ -10,14 +10,14 @@ fi
 
 # do test
 # no option
-java mp3retag testMp3/
+java mp3retag testMP3/
 
 # detail option
-java mp3retag -d testMp3/
+java mp3retag -d testMP3/
 
 # convert option
-java mp3retag --convert testMp3/
+java mp3retag --convert testMP3/
 
 # detail option re
-java mp3retag -d testMp3/
+java mp3retag -d testMP3/
 
